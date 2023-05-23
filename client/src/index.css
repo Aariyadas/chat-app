@@ -1,0 +1,37 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@100;500&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+*{
+  font-family:"Montserat";
+  font-size:16px;
+  font-weight: 500;
+}
+
+
+input{
+  height:40px;
+  border:1px solid#c084fc;
+  padding-left:20px;
+}
+input:focus{
+  outline: none;
+  border:1px solid rgb(23,28,52)
+}
+
+
+.contained-btn{
+  background-color: #c084fc;
+  color:white;
+  padding: 5px 20px;
+  text-transform: uppercase;
+}
+.outlined-btn{
+  background-color: #c084fc;
+  color:#c084fc;
+  padding: 5px 20px;
+  height:40px;
+  text-transform: uppercase;
+}
