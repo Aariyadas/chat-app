@@ -1,5 +1,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
+import { LoginUser } from "../../apiCalls/userapi";
+import { toast } from "react-hot-toast";
 
 const Login = () => {
   const [user, setUser] = React.useState({
@@ -7,7 +9,16 @@ const Login = () => {
     password: "",
   });
   const loginUser =async()=>{
-    console.log(user)
+    try{
+      const response =await LoginUser(user);
+      if(response.success){
+        toast.success(response.message);
+      }else{
+        toast.error(response.message)
+      }
+    }catch(error){
+      toast.error(error.message)
+    }
   }
 
 

@@ -2,6 +2,8 @@
 
 import React from 'react';
 import { Link } from 'react-router-dom';
+import { RegisterUser } from '../../apiCalls/userapi';
+import { toast } from 'react-hot-toast';
 
 const Register = () => {
   const [user, setUser] = React.useState({
@@ -10,7 +12,20 @@ const Register = () => {
     password: '',
   });
   const registerUser =async()=>{
-    console.log(user)
+    try{
+      const response =await RegisterUser(user);
+      if(response.sucess){
+        toast.success(response.message)
+        localStorage.setItem("token",response.data)
+        window.location.href="/";
+      }else{
+        toast.error(response.message)
+      }
+
+    }catch(error){
+      toast.error(error.message)
+    }
+   
   }
 
   return (
