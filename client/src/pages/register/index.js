@@ -4,9 +4,14 @@ import React, { useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { RegisterUser } from '../../apiCalls/userapi';
 import { toast } from 'react-hot-toast';
+import { useDispatch, useSelector } from 'react-redux';
+import { HideLoader, ShowLoader } from '../../redux/loaderSlice';
 
 const Register = () => {
+  const dispatch =useDispatch();
+
   const navigate=useNavigate();
+  // const loader = useSelector((state) => state.loader.loader);
   const [user, setUser] = React.useState({
     name: '',
     email: '',
@@ -14,16 +19,19 @@ const Register = () => {
   });
   const registerUser =async()=>{
     try{
+      dispatch(ShowLoader())
       const response =await RegisterUser(user);
-      if(response.sucess){
+      if(response.success){
         toast.success(response.message)
         localStorage.setItem("token",response.data)
         navigate("/");;
       }else{
+        dispatch(HideLoader())
         toast.error(response.message)
       }
 
     }catch(error){
+      dispatch(HideLoader())
       toast.error(error.message)
     }
    

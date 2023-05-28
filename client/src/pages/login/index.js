@@ -2,24 +2,32 @@ import React, { useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { LoginUser } from "../../apiCalls/userapi";
 import { toast } from "react-hot-toast";
+import { useDispatch } from "react-redux";
+import { HideLoader, ShowLoader } from "../../redux/loaderSlice";
 
 const Login = () => {
+  const dispatch =useDispatch();
   const navigate = useNavigate();
+  
   const [user, setUser] = React.useState({
     email: "",
     password: "",
   });
   const loginUser =async()=>{
     try{
+      dispatch(ShowLoader())
+      console.log("Ariya")
       const response =await LoginUser(user);
+      dispatch(HideLoader())
       if(response.success){
         toast.success(response.message);
         localStorage.setItem("token", response.data);
-        navigate("/");
+        window.location.href="/"
       }else{
         toast.error(response.message)
       }
     }catch(error){
+      dispatch(HideLoader())
       toast.error(error.message)
     }
   }
