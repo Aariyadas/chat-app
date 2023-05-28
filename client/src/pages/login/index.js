@@ -15,7 +15,7 @@ const Login = () => {
       if(response.success){
         toast.success(response.message);
         localStorage.setItem("token", response.data);
-        window.location.href = "/";
+        navigate("/");
       }else{
         toast.error(response.message)
       }

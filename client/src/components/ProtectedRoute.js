@@ -31,7 +31,9 @@ const ProtectedRoute = ({children}) => {
 
   return (
     <div>
+      <h1>
     {user?.name}
+    </h1>
     {user?.email}
   {children}
   </div>

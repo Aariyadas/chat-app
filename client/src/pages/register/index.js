@@ -1,11 +1,12 @@
 
 
-import React from 'react';
-import { Link } from 'react-router-dom';
+import React, { useEffect } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import { RegisterUser } from '../../apiCalls/userapi';
 import { toast } from 'react-hot-toast';
 
 const Register = () => {
+  const navigate=useNavigate();
   const [user, setUser] = React.useState({
     name: '',
     email: '',
@@ -17,7 +18,7 @@ const Register = () => {
       if(response.sucess){
         toast.success(response.message)
         localStorage.setItem("token",response.data)
-        window.location.href="/";
+        navigate("/");;
       }else{
         toast.error(response.message)
       }
@@ -27,6 +28,11 @@ const Register = () => {
     }
    
   }
+  useEffect(() => {
+    if (localStorage.getItem("token")) {
+      navigate("/");
+    }
+  }, []);
 
   return (
     <div
