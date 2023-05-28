@@ -1,9 +1,10 @@
-import React from "react";
-import { Link } from "react-router-dom";
+import React, { useEffect } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import { LoginUser } from "../../apiCalls/userapi";
 import { toast } from "react-hot-toast";
 
 const Login = () => {
+  const navigate = useNavigate();
   const [user, setUser] = React.useState({
     email: "",
     password: "",
@@ -13,6 +14,8 @@ const Login = () => {
       const response =await LoginUser(user);
       if(response.success){
         toast.success(response.message);
+        localStorage.setItem("token", response.data);
+        window.location.href = "/";
       }else{
         toast.error(response.message)
       }
@@ -20,6 +23,12 @@ const Login = () => {
       toast.error(error.message)
     }
   }
+  useEffect(() => {
+    if (localStorage.getItem("token")) {
+      navigate("/");
+    }
+  }, []);
+
 
 
 

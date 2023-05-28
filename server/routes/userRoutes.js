@@ -2,7 +2,8 @@ const User = require('../models/userModel'); // Import the User model
 
 const router =require('express').Router();
 const bcrypt =require("bcryptjs")
-const jwt=require("jsonwebtoken")
+const jwt=require("jsonwebtoken");
+const authmiddlewares = require('../middlewares/authmiddlewares');
 
 
 
@@ -80,6 +81,24 @@ router.post("/login",async(req,res)=>{
     }
 })
 
+
+router.get("/get-current-user",authmiddlewares,async(req,res)=>{
+    console.log("currentUser")
+    try{
+        const user=await User.findOne({_id:req.body.userId});
+        console.log(user)
+        res.send({
+            success:true,
+            message:"User Fetched Successfully",
+            data:user,
+        })
+    }catch{
+      res.send({
+        message:error.message,
+        success:false,
+      })
+    }
+})
 
 
 module.exports =router;
