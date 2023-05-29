@@ -12,7 +12,7 @@ function App() {
   return (
     <div>
       <Toaster position="top-center" reverseOrder={false} />
-      {!loader && <Loader/>}
+      {loader && <Loader/>}
       <BrowserRouter>
         <Routes>
           <Route
