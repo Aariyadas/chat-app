@@ -100,6 +100,26 @@ router.get("/get-current-user",authmiddlewares,async(req,res)=>{
     }
 })
 
+// get all users except current users
+
+
+router.get("/get-all-users",authmiddlewares,async (req,res) =>{
+    try{
+        const allUsers =await User.find({_id:{$ne:req.body.userId}});
+        res.send({
+            success:true,
+            message:"Users fetched sucessfully",
+            data:allUsers,
+        })
+
+    }catch(error){
+        res.send({
+            message:error.message,
+            success:false,
+        })
+
+    }
+})
 
 module.exports =router;
 
