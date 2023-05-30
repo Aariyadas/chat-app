@@ -2,6 +2,7 @@ import React from 'react'
 
 import ChatScreen from './components/ChatScreen'
 import UserSearch from './components/UserSearch'
+import UserList from './components/UserList'
 
 const Home = () => {
   const[searchKey ,setSearchKey] =React.useState("")
@@ -17,6 +18,8 @@ const Home = () => {
         searchKey={searchKey}
         setSearchKey={setSearchKey}
         />
+        <UserList
+        searchKey={searchKey}/>
 
       </div>
 
