@@ -4,7 +4,8 @@ import { useNavigate } from "react-router-dom";
 import { toast } from "react-hot-toast";
 import { useDispatch, useSelector } from "react-redux";
 import { HideLoader, ShowLoader } from "../redux/loaderSlice";
-import { SetUser ,SetAllUsers} from "../redux/userSlice";
+import { SetUser ,SetAllUsers, SetAllChats} from "../redux/userSlice";
+import { GetAllChats } from "../apiCalls/chatapi";
 
 const ProtectedRoute = ({ children }) => {
   const { user } = useSelector((state) => state.userReducer);
@@ -16,10 +17,12 @@ const ProtectedRoute = ({ children }) => {
       dispatch(ShowLoader());
       const response = await GetCurrentUser();
       const allUsersResponse =await GetAllUsers()
+      const allChatResponse=await GetAllChats()
       dispatch(HideLoader());
       if (response.success) {
         dispatch(SetUser(response.data));
         dispatch(SetAllUsers(allUsersResponse.data))
+        dispatch(SetAllChats(allChatResponse.data))
       } else {
         toast.error(response.message);
         navigate("/login");

@@ -2,10 +2,11 @@ const router = require("express").Router();
 const Chat = require("../models/chatModel");
 const authMiddleware=require("../middlewares/authmiddlewares")
 // Creating a new Chat
-router.post("create-new-chat", authMiddleware, async (req, res) => {
+router.post("/create-new-chat", authMiddleware, async (req, res) => {
   try {
     const newChat = new Chat(req.body);
     const savedChat = await newChat.save();
+    console.log(savedChat)
     res.send({
       success: true,
       message: "Chat created successfully",
@@ -18,17 +19,21 @@ router.post("create-new-chat", authMiddleware, async (req, res) => {
       error: error.message,
     });
   }
+  
 });
 
 // get all chats of current users
 
 router.get("/get-all-chats", authMiddleware, async (req, res) => {
+    console.log("chats")
   try {
+    console.log("api")
     const chats = await Chat.find({
       members: {
-        $in: [req.body.user._id],
+        $in: [req.body.userId],
       },
     });
+    console.log(chats)
     res.send({
       success: true,
       message: "Chat fetched successfully",
@@ -39,7 +44,9 @@ router.get("/get-all-chats", authMiddleware, async (req, res) => {
       success: false,
       message: "Error fetching chats",
       error: error.message,
+      
     });
+    console.log(error)
   }
 });
 
