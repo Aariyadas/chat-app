@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import toast from "react-hot-toast";
 import { HideLoader, ShowLoader } from "../../../redux/loaderSlice";
 import { CreateNewChat } from "../../../apiCalls/chatapi";
-import { SetSelectedChat } from "../../../redux/userSlice";
+import { SetAllChats, SetSelectedChat } from "../../../redux/userSlice";
 
 const UserList = ({ searchKey }) => {
   const { allUsers, allChats, user } = useSelector(
@@ -13,7 +13,7 @@ const UserList = ({ searchKey }) => {
   const createNewChat = async (receipentUserId) => {
     try {
       dispatch(ShowLoader());
-      const response = await CreateNewChat(user._id, receipentUserId);
+      const response = await CreateNewChat([user._id, receipentUserId]);
       dispatch(HideLoader());
       if (response.success) {
         toast.success(response.message);
