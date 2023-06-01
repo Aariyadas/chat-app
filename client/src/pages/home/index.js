@@ -10,7 +10,9 @@ const Home = () => {
     <div className='flex gap-5'>
       {/* user Search Chat List */}
       <div className='w-96'>
-   <UserSearch/>
+   <UserSearch
+   serachKey={searchKey}
+   setSearchKey={setSearchKey}/>
    <UserList
         searchKey={searchKey}/>
       </div>

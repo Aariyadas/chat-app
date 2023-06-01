@@ -22,8 +22,8 @@ const UserList = ({searchKey}) => {
                     />
                 )}
                 {!userObj.profilePic && (
-                    <div className='bg-gray-500 text-white rounded-ful h-10 w-10 flex items-center justify-center'>
-                        <h1 className='uppercase text-2xl font-semibold'>{userObj.name[0]}</h1>
+                    <div className='bg-gray-500 rounded-full h-10 w-10 flex items-center justify-center'>
+                        <h1 className='uppercase   text-white text-2xl font-semibold'>{userObj.name[0]}</h1>
                     </div>
                 )}
                 
