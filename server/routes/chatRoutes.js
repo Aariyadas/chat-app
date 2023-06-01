@@ -30,9 +30,9 @@ router.get("/get-all-chats", authMiddleware, async (req, res) => {
     console.log("api")
     const chats = await Chat.find({
       members: {
-        $in: [req.body.userId],
+        $in:[req.body.userId],
       },
-    });
+    }).populate("members").sort({updatedAt:-1});
     console.log(chats)
     res.send({
       success: true,
