@@ -6,10 +6,12 @@ const express = require('express');
 const app = express();
 const userRoute=require("./routes/userRoutes")
 const chatRoutes=require("./routes/chatRoutes")
+const messagesRoutes=require("./routes/messageRoutes")
 app.use(express.json());
 
 app.use("/api/users",userRoute)
 app.use("/api/chats",chatRoutes)
+app.use("/api/messages",messagesRoutes)
 
 
 

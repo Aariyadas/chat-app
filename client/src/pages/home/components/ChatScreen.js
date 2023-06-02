@@ -1,12 +1,37 @@
 import React from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { RiSendPlaneLine } from "react-icons/ri";
+import { SendMessage } from "../../../apiCalls/messageapi";
+import { HideLoader, ShowLoader } from "../../../redux/loaderSlice";
+import { toast } from "react-hot-toast";
 
 const ChatScreen = () => {
+  const dispatch=useDispatch();
+  const [newMessage,setNewMessages] =React.useState("")
   const { selectedChat, user } = useSelector((state) => state.userReducer);
   console.log(selectedChat);
   const receipentUser = selectedChat.members.find(
     (mem) => mem._id !== user._id
   );
+  const sendNewMessage =async() =>{
+    try{
+      dispatch(ShowLoader())
+   const message ={
+    chat:selectedChat._id,
+    sender:user._id,
+    text:newMessage,
+
+   }
+   const  response=await SendMessage(message)
+   dispatch(HideLoader())
+   if(response.success){
+    setNewMessages("")
+   }
+    }catch(error){
+     dispatch(HideLoader())
+     toast.error(error.message)
+    }
+  }
   console.log(receipentUser);
   return (
     <div className="bg-white h-[82vh] border rounded-2xl w-full flex flex-col justify-between p-5">
@@ -35,14 +60,17 @@ const ChatScreen = () => {
       {/* 2nd part chat message */}
       <div>Chat Message</div>
       {/* 3rd part chat input */}
-      <div className="h-18 rounded-xl border-gray-300 shadow border flex justify-between p-2 items-center">
+      <div className="h-18 rounded-xl border-gray-300 shadow border flex flex-col sm:flex-row justify-between p-2 items-center">
         <input
           type="text"
           placeholder="Type a message"
-          className="w-[90%] border-0 h-full rounded-xl focus:border-none"
+          className="w-full sm:w-[90%] border-0 h-full rounded-xl sm:mr-2 focus:border-none"
+          value={newMessage}
+          onChange={(e)=>setNewMessages(e.target.value)}
         />
-        <button className="bg-black text-white p-2 rounded h-max">
-          SEND
+        <button className="bg-black text-white py-1 px-5 rounded h-max mt-2 sm:mt-0 sm:w-auto"
+        onClick={sendNewMessage}>
+          <RiSendPlaneLine className="text-white" />
         </button>
       </div>
     </div>
