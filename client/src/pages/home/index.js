@@ -1,9 +1,10 @@
 import React from "react";
 
-import ChatScreen from "./components/ChatScreen";
-import UserSearch from "./components/UserSearch";
-import UserList from "./components/UserList";
+
 import { useSelector } from "react-redux";
+import UserSearch from "./components/UserSearch";
+import UserList from "./components/UserList"
+import ChatScreen from './components/ChatScreen'
 
 const Home = () => {
   const [searchKey, setSearchKey] = React.useState("");
