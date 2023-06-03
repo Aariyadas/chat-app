@@ -4,6 +4,7 @@ import toast from "react-hot-toast";
 import { HideLoader, ShowLoader } from "../../../redux/loaderSlice";
 import { CreateNewChat } from "../../../apiCalls/chatapi";
 import { SetAllChats, SetSelectedChat } from "../../../redux/userSlice";
+import moment from "moment";
 
 const UserList = ({ searchKey }) => {
   const { allUsers, allChats, user, selectedChat } = useSelector(
@@ -58,18 +59,39 @@ const UserList = ({ searchKey }) => {
     return false;
   };
 
+  const getLastMsg = (userObj) => {
+    const chat = allChats.find((chat) =>
+      chat.members.map((mem) => mem._id).includes(userObj._id)
+    );
+    if (!chat || !chat.lastMessage) {
+      return " ";
+    } else {
+      const lastMessagePerson =chat?.lastMessage?.sender ===user._id? "You :":"";
+      return(
+        <div className='flex justify-between w-full '>
+          <h1 className="text-gray-700 text-s">
+            {lastMessagePerson} {chat?.lastMessage?.text}
+          </h1>
+          <h1 className="text-gray-500 text-sm justify-right">
+            {moment(chat?.lastMessage?.createdAt).format("hh:mm:A")}
+          </h1>
+        </div>
+      )
+      }
+  };
+
   return (
-    <div className="flex flex-col gap-3 mt-5">
+    <div className="flex flex-col gap-3 mt-5 w-96">
       {getData().map((userObj) => {
         return (
           <div
-            className={`"shadow-sm border p-3 rounded-2xl bg-white flex justify-between items- cursor-pointer "
+            className={`"shadow-sm border p-3 rounded-2xl bg-white flex justify-between items-center cursor-pointer w-full "
             ${getIsSelectedChatOrNot(userObj) && "border-primary border-2"}
             `}
             key={userObj._id}
             onClick={() => openChat(userObj._id)}
           >
-            <div className="flex gap-5 items-center">
+            <div className="flex gap-5 items-center w-full">
               {userObj.profilePic && (
                 <img
                   src={userObj.profilePic}
@@ -84,8 +106,10 @@ const UserList = ({ searchKey }) => {
                   </h1>
                 </div>
               )}
-
-              <h1>{userObj.name}</h1>
+              <div className="flex flex-col gap-1 w-full">
+                <h1>{userObj.name}</h1>
+                <h1 className="text-gray-500 text-sm">{getLastMsg(userObj)}</h1>
+              </div>
             </div>
             <div onClick={() => createNewChat(userObj._id)}>
               {!allChats.find((chat) =>
