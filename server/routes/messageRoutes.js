@@ -11,7 +11,7 @@ router.post("/new-message", async (req, res) => {
     // store message
 
     const newMessage = new Message(req.body);
-    const savedMessage =await newMessage.save()
+    const savedMessage = await newMessage.save();
 
     //update last message of chat
 
@@ -19,9 +19,10 @@ router.post("/new-message", async (req, res) => {
       { _id: req.body.chat },
       {
         lastMessage: savedMessage._id,
-        $inc:{unreadMessages:1}
-        },
-      
+        unreadMessage:{
+          $inc:1,
+        }},
+    
     );
     res.send({
       success: true,
@@ -38,6 +39,7 @@ router.post("/new-message", async (req, res) => {
 });
 
 router.get("/get-all-messages/:chatId", async (req, res) => {
+
   try {
     const messages = await Message.find({
       chat: req.params.chatId,
@@ -56,4 +58,7 @@ router.get("/get-all-messages/:chatId", async (req, res) => {
   }
 });
 
-module.exports= router;
+
+
+
+module.exports = router;

@@ -5,11 +5,13 @@ import { GetMessages, SendMessage } from "../../../apiCalls/messageapi";
 import { HideLoader, ShowLoader } from "../../../redux/loaderSlice";
 import { toast } from "react-hot-toast";
 import moment from "moment";
+import { ClearChatMessage } from "../../../apiCalls/chatapi";
+import { SetAllChats } from "../../../redux/userSlice";
 
 const ChatScreen = () => {
   const dispatch = useDispatch();
   const [newMessage, setNewMessages] = React.useState("");
-  const { selectedChat, user } = useSelector((state) => state.userReducer);
+  const { selectedChat, user,allChats} = useSelector((state) => state.userReducer);
   const [messages = [], setMessages] = React.useState([]);
   console.log(selectedChat);
   const receipentUser = selectedChat.members.find(
@@ -49,8 +51,32 @@ const ChatScreen = () => {
     }
   };
 
+  const clearUnreadMessages =async () =>{
+    try{
+      dispatch(ShowLoader())
+      const response =await ClearChatMessage(selectedChat._id);
+      dispatch(HideLoader());
+      if(response.success){
+        const updatedChats =allChats.map((chat)=>{
+          if(chat._id ===selectedChat._id){
+            return response.data;
+          }
+          return chat;
+        })
+        console.log(updatedChats)
+        dispatch(SetAllChats(updatedChats))
+      }
+    }catch(error){
+      dispatch(HideLoader())
+      toast.error(error.message)
+    }
+  }
+
+
+
   useEffect(() => {
     getMessages();
+    clearUnreadMessages()
   }, [selectedChat]);
 
   return (
@@ -104,7 +130,7 @@ const ChatScreen = () => {
                   {isCurrentUserIsSender && (
                     <i
                       className={`ri-check-double-line text-lg p-1
-                    ${message.read ? "text-green-700" : "text-gray-400"}
+                    ${message.read ? "text-green-400" : "text-gray-400"}
                  `}
                     ></i>
                   )}

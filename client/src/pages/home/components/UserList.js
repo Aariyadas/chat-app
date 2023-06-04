@@ -42,7 +42,7 @@ const UserList = ({ searchKey }) => {
   };
 
   const getData = () => {
-  const data=  allUsers.filter(
+   return allUsers.filter(
       (userObj) =>
         (userObj.name.toLowerCase().includes(searchKey.toLowerCase()) &&
           searchKey) ||
@@ -52,10 +52,7 @@ const UserList = ({ searchKey }) => {
     );
   };
 
-  const sortData= data.sort((a,b)=>{
-
-  })
-}
+ 
   const getIsSelectedChatOrNot = (userObj) => {
     if (selectedChat) {
       return selectedChat.members.map((mem) => mem._id).includes(userObj._id);
@@ -96,6 +93,7 @@ const UserList = ({ searchKey }) => {
       )
       }
   };
+ 
 
   return (
     <div className="flex flex-col gap-3 mt-5 w-96">
