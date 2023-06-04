@@ -28,7 +28,7 @@ router.post("/create-new-chat", authMiddleware, async (req, res) => {
 // get all chats of current users
 
 router.get("/get-all-chats", authMiddleware, async (req, res) => {
-  console.log("chats");
+ 
   try {
     console.log("api");
     const chats = await Chat.find({
@@ -51,12 +51,12 @@ router.get("/get-all-chats", authMiddleware, async (req, res) => {
       message: "Error fetching chats",
       error: error.message,
     });
-    console.log(error);
+    
   }
 });
 
 router.post("/clear-unread-message", authMiddleware, async (req, res) => {
-  console.log("unread");
+  
   try {
     // Find chat and update unread message count to 0
     const chat = await Chat.findById(req.body.chat);
@@ -76,7 +76,7 @@ router.post("/clear-unread-message", authMiddleware, async (req, res) => {
     )
       .populate("members")
       .populate("lastMessage");
-    console.log("updated:", updatedChat);
+   
     // Find all unread message of chat and update them as read
 
     await Message.updateMany(
@@ -99,7 +99,7 @@ router.post("/clear-unread-message", authMiddleware, async (req, res) => {
       message: "Error clearing unread message",
       error: error.message,
     });
-    console.log(error);
+  
   }
 });
 
