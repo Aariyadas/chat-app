@@ -45,14 +45,14 @@ const ProtectedRoute = ({ children }) => {
   return (
     <div className="min-h-screen min-w-screen bg-gray-100 p-2">
       {/* Header */}
-      <div className="flex justify-between p-5">
+      <div className="flex justify-between p-5 ">
         <div className="flex items-center gap-1">
           <i className="ri-message-3-line text-2xl"></i>
           <h1 className="text-primary text-2xl uppercase font-bold">Let's Chat</h1>
         </div>
         <div className="flex gap-1 text-md items-center">
           <i className="ri-shield-user-line gap-1"></i>
-          <h1 className="underline text-sm md:text-base">{user?.name}</h1>
+          <h1 className="underline text-sm md:text-base ">{user?.name}</h1>
           <i className="ri-logout-circle-line ml-5 text-xl cursor-pointer"
            onClick={()=>{
             localStorage.removeItem("token");
@@ -60,7 +60,7 @@ const ProtectedRoute = ({ children }) => {
         }}></i>
         </div>
       </div>
-      <div className="p-5">{children}</div>
+      <div className="py-5">{children}</div>
     </div>
   );
 };

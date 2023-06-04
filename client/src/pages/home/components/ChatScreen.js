@@ -76,8 +76,11 @@ const ChatScreen = () => {
 
   useEffect(() => {
     getMessages();
-    clearUnreadMessages()
-  }, [selectedChat]);
+    if(selectedChat?.lastMessage?.sender !== user._id){
+      clearUnreadMessages()
+    }
+   
+  },[selectedChat]);
 
   return (
     <div className="bg-white h-[82vh] border rounded-2xl w-full flex flex-col justify-between p-5">
