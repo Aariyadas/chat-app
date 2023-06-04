@@ -86,14 +86,33 @@ const ChatScreen = () => {
             return (
               <div className={`flex ${isCurrentUserIsSender && "justify-end"}`}>
                 <div className="flex flex-col gap-1">
-                  <h1 className={`${isCurrentUserIsSender?"bg-primary text-white rounded-bl-none":"bg-gray-300 text-primary rounded-tr-none"}
+                  <h1
+                    className={`${
+                      isCurrentUserIsSender
+                        ? "bg-primary text-white rounded-bl-none"
+                        : "bg-gray-300 text-primary rounded-tr-none"
+                    }
                    p-2 rounded-xl `}
-                   >{message.text}</h1>
-                  <h1 className="text-gray-500 text-sm">{moment(message.createdAt).format("hh:mm A")}</h1>
+                  >
+                    {message.text}
+                  </h1>
+                  <h1 className="text-gray-500 text-sm">
+                    {moment(message.createdAt).format("hh:mm A")}
+                  </h1>
+                </div>
+                <div>
+                  {isCurrentUserIsSender && (
+                    <i
+                      className={`ri-check-double-line text-lg p-1
+                    ${message.read ? "text-green-700" : "text-gray-400"}
+                 `}
+                    ></i>
+                  )}
                 </div>
               </div>
             );
-          })}:
+          })}
+          :
         </div>
       </div>
       {/* 3rd part chat input */}

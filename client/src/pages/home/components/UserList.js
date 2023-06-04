@@ -42,7 +42,7 @@ const UserList = ({ searchKey }) => {
   };
 
   const getData = () => {
-    return allUsers.filter(
+  const data=  allUsers.filter(
       (userObj) =>
         (userObj.name.toLowerCase().includes(searchKey.toLowerCase()) &&
           searchKey) ||
@@ -52,12 +52,29 @@ const UserList = ({ searchKey }) => {
     );
   };
 
+  const sortData= data.sort((a,b)=>{
+
+  })
+}
   const getIsSelectedChatOrNot = (userObj) => {
     if (selectedChat) {
       return selectedChat.members.map((mem) => mem._id).includes(userObj._id);
     }
     return false;
   };
+
+  const getUnreadMessages=(userObj) =>{
+    const chat =allChats.find((chat)=>
+    chat.members.map((mem)=>mem._id).includes(userObj._id)
+    )
+    if(chat && chat?.unreadMessages && chat?.lastMessage?.sender!== user._id){
+      return(
+        <div className="bg-primary text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
+          {chat?.unreadMessages}
+        </div>
+      )
+    }
+  }
 
   const getLastMsg = (userObj) => {
     const chat = allChats.find((chat) =>
@@ -107,7 +124,12 @@ const UserList = ({ searchKey }) => {
                 </div>
               )}
               <div className="flex flex-col gap-1 w-full">
+                <div className="flex gap-1 ">
                 <h1>{userObj.name}</h1>
+                
+                {getUnreadMessages(userObj)}
+        
+                </div>
                 <h1 className="text-gray-500 text-sm">{getLastMsg(userObj)}</h1>
               </div>
             </div>
