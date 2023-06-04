@@ -8,7 +8,7 @@ import moment from "moment";
 import { ClearChatMessage } from "../../../apiCalls/chatapi";
 import { SetAllChats } from "../../../redux/userSlice";
 
-const ChatScreen = () => {
+const ChatScreen = (socket) => {
   const dispatch = useDispatch();
   const [newMessage, setNewMessages] = React.useState("");
   const { selectedChat, user,allChats} = useSelector((state) => state.userReducer);

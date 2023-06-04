@@ -83,10 +83,10 @@ router.post("/login",async(req,res)=>{
 
 
 router.get("/get-current-user",authmiddlewares,async(req,res)=>{
-    console.log("currentUser")
+   
     try{
         const user=await User.findOne({_id:req.body.userId});
-        console.log(user)
+     
         res.send({
             success:true,
             message:"User Fetched Successfully",

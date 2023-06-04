@@ -30,7 +30,7 @@ router.post("/create-new-chat", authMiddleware, async (req, res) => {
 router.get("/get-all-chats", authMiddleware, async (req, res) => {
  
   try {
-    console.log("api");
+    
     const chats = await Chat.find({
       members: {
         $in: [req.body.userId],
@@ -39,7 +39,7 @@ router.get("/get-all-chats", authMiddleware, async (req, res) => {
       .populate("members")
       .populate("lastMessage")
       .sort({ updatedAt: -1 });
-    console.log(chats);
+
     res.send({
       success: true,
       message: "Chat fetched successfully",
@@ -66,7 +66,7 @@ router.post("/clear-unread-message", authMiddleware, async (req, res) => {
         message: "Chat not Found",
       });
     }
-    console.log(chat);
+  
     const updatedChat = await Chat.findByIdAndUpdate(
       req.body.chat,
       {

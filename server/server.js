@@ -21,10 +21,20 @@ const io =require("socket.io")(server,{
 // Check Connection of socket from client 
 io.on("connection",(socket)=>{
   // Sockets events
-  
-  console.log("connection with socketId", socket.id);
+  socket.on("join-room",(userId)=>{
+    
+    socket.join(userId)
+  })
+  // Send message to recepient
+  socket.on("send-message",({text,sender, recepient})=>{
+    //send message to recepient 
+     io.to( recepient).emit("receive-message",{text,sender})
+
+  })
 
 });
+
+
 
 
 
@@ -33,7 +43,7 @@ app.use("/api/chats", chatRoutes);
 app.use("/api/messages", messagesRoutes);
 
 const port = process.env.PORT || 5000;
-console.log(process.env.MONGO_URI);
+
 mongoose
   .connect(process.env.MONGO_URI, {
     useNewUrlParser: true,
