@@ -9,34 +9,29 @@ const chatRoutes = require("./routes/chatRoutes");
 const messagesRoutes = require("./routes/messageRoutes");
 app.use(express.json());
 
-const server =require("http").createServer(app);
+const server = require("http").createServer(app);
 
-const io =require("socket.io")(server,{
-  cors:{
-    orgin:"http://localhost:3000",
-    methods:["GET","POST"]
+const io = require("socket.io")(server, {
+  cors: {
+    orgin: "http://localhost:3000",
+    methods: ["GET", "POST"],
   },
 });
 
-// Check Connection of socket from client 
-io.on("connection",(socket)=>{
+// Check Connection of socket from client
+io.on("connection", (socket) => {
   // Sockets events
-  socket.on("join-room",(userId)=>{
-    
-    socket.join(userId)
-  })
-  // Send message to recepient
-  socket.on("send-message",({text,sender, recepient})=>{
-    //send message to recepient 
-     io.to( recepient).emit("receive-message",{text,sender})
-
-  })
-
+  socket.on("join-room", (userId) => {
+    socket.join(userId);
+  });
+  // Send message to clients (who are present in members array)
+  socket.on("send-message", (message) => {
+ 
+    io.to(message.members[0])
+      .to(message.members[1])
+      .emit("receive-message", message);
+  });
 });
-
-
-
-
 
 app.use("/api/users", userRoute);
 app.use("/api/chats", chatRoutes);

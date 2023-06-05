@@ -8,10 +8,12 @@ import moment from "moment";
 import { ClearChatMessage } from "../../../apiCalls/chatapi";
 import { SetAllChats } from "../../../redux/userSlice";
 
-const ChatScreen = (socket) => {
+const ChatScreen = ({socket}) => {
   const dispatch = useDispatch();
   const [newMessage, setNewMessages] = React.useState("");
-  const { selectedChat, user,allChats} = useSelector((state) => state.userReducer);
+  const { selectedChat, user, allChats } = useSelector(
+    (state) => state.userReducer
+  );
   const [messages = [], setMessages] = React.useState([]);
   console.log(selectedChat);
   const receipentUser = selectedChat.members.find(
@@ -19,19 +21,26 @@ const ChatScreen = (socket) => {
   );
   const sendNewMessage = async () => {
     try {
-      dispatch(ShowLoader());
       const message = {
         chat: selectedChat._id,
+
         sender: user._id,
         text: newMessage,
       };
+      // Sending message to server using socket
+      socket.emit("send-message", {
+        ...message,
+        members: selectedChat.members.map((mem) => mem._id),
+        createdAt: moment().format("DD-MM-YYYY hh:mm:ss"), // Fix: Corrected the format
+        read: false,
+      });
+      // sending and storing data in db
       const response = await SendMessage(message);
-      dispatch(HideLoader());
+
       if (response.success) {
         setNewMessages("");
       }
     } catch (error) {
-      dispatch(HideLoader());
       toast.error(error.message);
     }
   };
@@ -51,36 +60,43 @@ const ChatScreen = (socket) => {
     }
   };
 
-  const clearUnreadMessages =async () =>{
-    try{
-      dispatch(ShowLoader())
-      const response =await ClearChatMessage(selectedChat._id);
+  const clearUnreadMessages = async () => {
+    try {
+      dispatch(ShowLoader());
+      const response = await ClearChatMessage(selectedChat._id);
       dispatch(HideLoader());
-      if(response.success){
-        const updatedChats =allChats.map((chat)=>{
-          if(chat._id ===selectedChat._id){
+      if (response.success) {
+        const updatedChats = allChats.map((chat) => {
+          if (chat._id === selectedChat._id) {
             return response.data;
           }
           return chat;
-        })
-        console.log(updatedChats)
-        dispatch(SetAllChats(updatedChats))
+        });
+        console.log(updatedChats);
+        dispatch(SetAllChats(updatedChats));
       }
-    }catch(error){
-      dispatch(HideLoader())
-      toast.error(error.message)
+    } catch (error) {
+      dispatch(HideLoader());
+      toast.error(error.message);
     }
-  }
-
-
+  };
 
   useEffect(() => {
     getMessages();
-    if(selectedChat?.lastMessage?.sender !== user._id){
-      clearUnreadMessages()
+    if (selectedChat?.lastMessage?.sender !== user._id) {
+      clearUnreadMessages();
     }
-   
-  },[selectedChat]);
+    // reciver message from server using socket
+    socket.on("receive-message", (message) => {
+      setMessages((prev) => [...prev, message]);
+    });
+  }, [selectedChat]);
+
+  useEffect(() => {
+    // always scroll to bottom For messages
+    const messagesContainer = document.getElementById("messages");
+    messagesContainer.scrollTop = messagesContainer.scrollHeight;
+  }, [messages]);
 
   return (
     <div className="bg-white h-[82vh] border rounded-2xl w-full flex flex-col justify-between p-5">
@@ -107,7 +123,7 @@ const ChatScreen = (socket) => {
         <hr />
       </div>
       {/* 2nd part chat message */}
-      <div className="h-[55vh] overflow-y-scroll p-5">
+      <div className="h-[55vh] overflow-y-scroll p-5" id="messages">
         <div className="flex flex-col gap-2">
           {messages.map((message) => {
             const isCurrentUserIsSender = message.sender === user._id;

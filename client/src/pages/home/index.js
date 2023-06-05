@@ -1,15 +1,14 @@
 import React, { useEffect } from "react";
-
+import { io } from "socket.io-client";
 import { useSelector } from "react-redux";
 
 import UserList from "./components/UserList";
 import ChatScreen from "./components/ChatScreen";
 import UserSearch from "./components/UserSearch";
 
-import { io } from "socket.io-client";
-
+const socket = io("http://localhost:5000");
 const Home = () => {
-  const socket = io("http://localhost:5000");
+
 
   const [searchKey, setSearchKey] = React.useState("");
   const { selectedChat, user } = useSelector((state) => state.userReducer);
@@ -17,16 +16,7 @@ const Home = () => {
   useEffect(() => {
     if (user) {
       socket.emit("join-room", user._id);
-      // send new message  to recepient
-      socket.emit("send-message", {
-        text: "Hi Jetlin ,This is from Ariya",
-        sender:user._id,
-        recepient: "647886c121d8c5c24ce9a857",
-      });
-      // receive message from recepient
-      socket.on("receive-message",(data)=>{
-        console.log("data",data)
-      })
+      
 
     }
   }, [user]);
