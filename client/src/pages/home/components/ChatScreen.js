@@ -5,11 +5,11 @@ import { GetMessages, SendMessage } from "../../../apiCalls/messageapi";
 import { HideLoader, ShowLoader } from "../../../redux/loaderSlice";
 import { toast } from "react-hot-toast";
 import moment from "moment";
-import store from "../../../redux/store"
+import store from "../../../redux/store";
 import { ClearChatMessage } from "../../../apiCalls/chatapi";
 import { SetAllChats } from "../../../redux/userSlice";
 
-const ChatScreen = ({socket}) => {
+const ChatScreen = ({ socket }) => {
   const dispatch = useDispatch();
   const [newMessage, setNewMessages] = React.useState("");
   const { selectedChat, user, allChats } = useSelector(
@@ -63,9 +63,13 @@ const ChatScreen = ({socket}) => {
 
   const clearUnreadMessages = async () => {
     try {
-      dispatch(ShowLoader());
+      socket.emit("clear-unread-messages", {
+        chat: selectedChat._id,
+        members: selectedChat.members.map((mem) => mem._id),
+      });
+
       const response = await ClearChatMessage(selectedChat._id);
-      dispatch(HideLoader());
+
       if (response.success) {
         const updatedChats = allChats.map((chat) => {
           if (chat._id === selectedChat._id) {
@@ -77,7 +81,6 @@ const ChatScreen = ({socket}) => {
         dispatch(SetAllChats(updatedChats));
       }
     } catch (error) {
-      dispatch(HideLoader());
       toast.error(error.message);
     }
   };
@@ -93,9 +96,42 @@ const ChatScreen = ({socket}) => {
       if (tempSelectedChat._id === message.chat) {
         setMessages((messages) => [...messages, message]);
       }
+      if (
+        tempSelectedChat._id === message.chat &&
+        message.sender !== user._id
+      ) {
+        clearUnreadMessages();
+      }
+    });
+
+    socket.on("unread-messages-clear", (data) => {
+      const tempAllChats = store.getState().userReducer.allChats;
+      const tempSelectedChat = store.getState().userReducer.selectedChat;
+      if (data.chat === tempSelectedChat._id ) {
+        const updatedChats = tempAllChats.map((chat) => {
+          if (chat._id === data.chat) {
+            return {
+              ...chat,
+              clearUnreadMessages: 0,
+            };
+          }
+          return chat;
+        });
+        dispatch(SetAllChats(updatedChats));
+
+        // set all messages as read
+        setMessages(prevMessages=>{
+          return prevMessages.map(messages=>{
+            return{
+              ...messages,
+              read:true
+            }
+          })
+        })
+        
+      }
     });
   }, [selectedChat]);
-  
 
   useEffect(() => {
     // always scroll to bottom For messages
