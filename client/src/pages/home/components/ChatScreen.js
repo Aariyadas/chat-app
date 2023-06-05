@@ -5,6 +5,7 @@ import { GetMessages, SendMessage } from "../../../apiCalls/messageapi";
 import { HideLoader, ShowLoader } from "../../../redux/loaderSlice";
 import { toast } from "react-hot-toast";
 import moment from "moment";
+import store from "../../../redux/store"
 import { ClearChatMessage } from "../../../apiCalls/chatapi";
 import { SetAllChats } from "../../../redux/userSlice";
 
@@ -86,11 +87,15 @@ const ChatScreen = ({socket}) => {
     if (selectedChat?.lastMessage?.sender !== user._id) {
       clearUnreadMessages();
     }
-    // reciver message from server using socket
-    socket.on("receive-message", (message) => {
-      setMessages((prev) => [...prev, message]);
+    // receive message from server using socket
+    socket.off("receive-message").on("receive-message", (message) => {
+      const tempSelectedChat = store.getState().userReducer.selectedChat;
+      if (tempSelectedChat._id === message.chat) {
+        setMessages((messages) => [...messages, message]);
+      }
     });
   }, [selectedChat]);
+  
 
   useEffect(() => {
     // always scroll to bottom For messages
