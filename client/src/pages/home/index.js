@@ -26,7 +26,7 @@ const Home = () => {
       {/* user Search Chat List */}
       <div className="w-96">
         <UserSearch serachKey={searchKey} setSearchKey={setSearchKey} />
-        <UserList searchKey={searchKey} />
+        <UserList searchKey={searchKey} socket={socket}/>
       </div>
       {/* 2nd Part Chat Area */}
 

@@ -1,12 +1,13 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import toast from "react-hot-toast";
 import { HideLoader, ShowLoader } from "../../../redux/loaderSlice";
 import { CreateNewChat } from "../../../apiCalls/chatapi";
 import { SetAllChats, SetSelectedChat } from "../../../redux/userSlice";
 import moment from "moment";
+import store from "../../../redux/store";
 
-const UserList = ({ searchKey }) => {
+const UserList = ({ searchKey ,socket}) => {
   const { allUsers, allChats, user, selectedChat } = useSelector(
     (state) => state.userReducer
   );
@@ -96,6 +97,27 @@ const UserList = ({ searchKey }) => {
       );
     }
   };
+
+ useEffect(()=>{
+  socket.on("receive-message",(message)=>{
+    const tempSelectedChat =store.getState().userReducer.selectedChat;
+    const tempAllChats=store.getState().userReducer.allChats;
+    if(tempSelectedChat?._id !== message.chat){
+     const updatedChats =tempAllChats.map((chat)=>{
+      if(chat._id === message.chat){
+        return {
+          ...chat,
+          unreadMessages:(chat?.unreadMessages ||0)+1,
+          lastMessage:message
+        }
+      }
+      return chat;
+     });
+     dispatch(SetAllChats(updatedChats))
+    }
+  })
+ },[])
+
 
   return (
     <div className="flex flex-col gap-3 mt-5 w-96">
