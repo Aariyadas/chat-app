@@ -10,6 +10,7 @@ import { ClearChatMessage } from "../../../apiCalls/chatapi";
 import { SetAllChats } from "../../../redux/userSlice";
 
 const ChatScreen = ({ socket }) => {
+  const [isReceipentTyping, setIsReceipentTyping] = React.useState(false);
   const dispatch = useDispatch();
   const [newMessage, setNewMessages] = React.useState("");
   const { selectedChat, user, allChats } = useSelector(
@@ -107,7 +108,7 @@ const ChatScreen = ({ socket }) => {
     socket.on("unread-messages-clear", (data) => {
       const tempAllChats = store.getState().userReducer.allChats;
       const tempSelectedChat = store.getState().userReducer.selectedChat;
-      if (data.chat === tempSelectedChat._id ) {
+      if (data.chat === tempSelectedChat._id) {
         const updatedChats = tempAllChats.map((chat) => {
           if (chat._id === data.chat) {
             return {
@@ -120,16 +121,25 @@ const ChatScreen = ({ socket }) => {
         dispatch(SetAllChats(updatedChats));
 
         // set all messages as read
-        setMessages(prevMessages=>{
-          return prevMessages.map(messages=>{
-            return{
+        setMessages((prevMessages) => {
+          return prevMessages.map((messages) => {
+            return {
               ...messages,
-              read:true
-            }
-          })
-        })
-        
+              read: true,
+            };
+          });
+        });
       }
+    });
+
+    socket.on("started-typing", (data) => {
+      const selectedChat = store.getState().userReducer.selectedChat;
+      if (data.chat === selectedChat._id && data.sender !== user._id) {
+        setIsReceipentTyping(true);
+      }
+      setTimeout(() => {
+        setIsReceipentTyping(false)
+      },1500)
     });
   }, [selectedChat]);
 
@@ -137,7 +147,7 @@ const ChatScreen = ({ socket }) => {
     // always scroll to bottom For messages
     const messagesContainer = document.getElementById("messages");
     messagesContainer.scrollTop = messagesContainer.scrollHeight;
-  }, [messages]);
+  }, [messages,isReceipentTyping]);
 
   return (
     <div className="bg-white h-[82vh] border rounded-2xl w-full flex flex-col justify-between p-5">
@@ -198,7 +208,13 @@ const ChatScreen = ({ socket }) => {
               </div>
             );
           })}
-          :
+          {isReceipentTyping && (
+            <div className="pb-10">
+            <h1 className="bg-blue-100 text-primary  p-2 rounded-x w-max">
+              typing...
+            </h1>
+            </div>
+          )}
         </div>
       </div>
       {/* 3rd part chat input */}
@@ -208,7 +224,17 @@ const ChatScreen = ({ socket }) => {
           placeholder="Type a message"
           className="w-full sm:w-[90%] border-0 h-full rounded-xl sm:mr-2 focus:border-none"
           value={newMessage}
-          onChange={(e) => setNewMessages(e.target.value)}
+          onChange={(e) => {
+            setNewMessages(e.target.value);
+            const messagesContainer = document.getElementById("messages");
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+              socket.emit("typing", {
+                chat: selectedChat._id,
+                members: selectedChat.members.map((mem) => mem._id),
+                sender: user._id,
+              });
+            
+          }}
         />
         <button
           className="bg-black text-white py-1 px-5 rounded h-max mt-2 sm:mt-0 sm:w-auto"

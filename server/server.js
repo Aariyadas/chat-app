@@ -31,11 +31,19 @@ io.on("connection", (socket) => {
       .to(message.members[1])
       .emit("receive-message", message);
   });
+  // clear unread messages
   socket.on("clear-unread-messages",(data)=>{
     io.to(data.members[0])
     .to(data.members[1])
     .emit("unread-messages-clear",data)
   })
+  //  typing event
+  socket.on("typing",(data)=>{
+    io.to(data.members[0])
+    .to(data.members[1])
+    .emit("started-typing",data)
+  })
+
 });
 
 app.use("/api/users", userRoute);
