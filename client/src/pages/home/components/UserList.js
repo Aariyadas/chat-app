@@ -7,7 +7,7 @@ import { SetAllChats, SetSelectedChat } from "../../../redux/userSlice";
 import moment from "moment";
 import store from "../../../redux/store";
 
-const UserList = ({ searchKey ,socket}) => {
+const UserList = ({ searchKey ,socket,onlineUsers}) => {
   const { allUsers, allChats, user, selectedChat } = useSelector(
     (state) => state.userReducer
   );
@@ -69,7 +69,7 @@ const UserList = ({ searchKey ,socket}) => {
       chat?.lastMessage?.sender !== user._id
     ) {
       return (
-        <div className="bg-primary text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
+        <div className="bg-primary text-white text-xs rounded-full h-5 w-5 flex items-center justify-center ">
           {chat?.unreadMessages}
         </div>
       );
@@ -145,10 +145,13 @@ const UserList = ({ searchKey ,socket}) => {
                 />
               )}
               {!userObj.profilePic && (
-                <div className="bg-gray-500 rounded-full h-12 w-12  flex items-center justify-center">
+                <div className="bg-gray-400 rounded-full h-12 w-12  flex items-center justify-center relative">
                   <h1 className="uppercase text-white text-xl font-semibold">
                     {userObj.name[0]}
                   </h1>
+                  {onlineUsers.includes(userObj._id)&& <div>
+                    <div className="bg-green-600 h-3 w-3 rounded-full absolute bottom-[2px] right-1"></div>
+                    </div>}
                 </div>
               )}
               <div className="flex flex-col gap-1 ">

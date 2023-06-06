@@ -12,11 +12,16 @@ const Home = () => {
 
   const [searchKey, setSearchKey] = React.useState("");
   const { selectedChat, user } = useSelector((state) => state.userReducer);
-
+  const [onlineUsers,setOnlineUsers]=React.useState([])
   useEffect(() => {
     if (user) {
       socket.emit("join-room", user._id);
+      socket.emit("came-online",user._id)
       
+      socket.on("online-users",(users)=>{
+        console.log(users)
+        setOnlineUsers(users)
+      })
 
     }
   }, [user]);
@@ -26,7 +31,7 @@ const Home = () => {
       {/* user Search Chat List */}
       <div className="w-96">
         <UserSearch serachKey={searchKey} setSearchKey={setSearchKey} />
-        <UserList searchKey={searchKey} socket={socket}/>
+        <UserList searchKey={searchKey} socket={socket} onlineUsers={onlineUsers}/>
       </div>
       {/* 2nd Part Chat Area */}
 

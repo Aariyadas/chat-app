@@ -19,6 +19,7 @@ const io = require("socket.io")(server, {
 });
 
 // Check Connection of socket from client
+let onlineUsers =[];
 io.on("connection", (socket) => {
   // Sockets events
   socket.on("join-room", (userId) => {
@@ -42,6 +43,17 @@ io.on("connection", (socket) => {
     io.to(data.members[0])
     .to(data.members[1])
     .emit("started-typing",data)
+  })
+
+  // online users
+
+
+  socket.on("came-online",(userId)=>{
+    if(!onlineUsers.includes(userId)){
+      onlineUsers.push(userId)
+    }
+    console.log(onlineUsers)
+    io.emit("online-users",onlineUsers)
   })
 
 });

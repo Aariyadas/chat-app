@@ -19,7 +19,7 @@ router.post("/new-message", async (req, res) => {
       { _id: req.body.chat },
       {
         lastMessage: savedMessage._id,
-       $inc:{unreadMessages:1}
+       $inc:{unreadMessages:1},
         },
     
     );
