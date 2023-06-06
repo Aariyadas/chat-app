@@ -5,7 +5,7 @@ const UserSearch = ({searchKey,setSearchKey}) => {
    
 
   return (
-    <div className='relative'>
+    <div className='relative lg:w-96 xl md:w-60 sm:w-60'>
         <input type='text' placeholder='Search chats'
         className='rounded-xl w-full pl-10 text-gray-500 h-14'
         value={searchKey}

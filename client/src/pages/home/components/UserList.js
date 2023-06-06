@@ -101,20 +101,32 @@ const UserList = ({ searchKey ,socket,onlineUsers}) => {
  useEffect(()=>{
   socket.on("receive-message",(message)=>{
     const tempSelectedChat =store.getState().userReducer.selectedChat;
-    const tempAllChats=store.getState().userReducer.allChats;
+    let tempAllChats=store.getState().userReducer.allChats;
     if(tempSelectedChat?._id !== message.chat){
-     const updatedChats =tempAllChats.map((chat)=>{
+     const updatedAllChats =tempAllChats.map((chat)=>{
       if(chat._id === message.chat){
         return {
           ...chat,
-          unreadMessages:(chat?.unreadMessages ||0)+1,
-          lastMessage:message
+          unreadMessages:(chat?.unreadMessages ||0) +1,
+          lastMessage:message,
+          updatedAt:message.createdAt
         }
       }
       return chat;
      });
-     dispatch(SetAllChats(updatedChats))
+     tempAllChats=updatedAllChats;
     }
+    // Sort latest message on top
+    const latestChat = tempAllChats.find(
+    (chat)=> chat._id ===message.chat
+
+    );
+    const otherChats =tempAllChats.filter(
+      (chat)=> chat._id !== message.chat
+    );
+
+    tempAllChats=[latestChat,...otherChats];
+    dispatch(SetAllChats(tempAllChats))
   })
  },[])
 
