@@ -1,7 +1,7 @@
 # chat-app
 
 
-Bu Full-Stack Real-World Chat Application: A complete application from scratch, incorporating both frontend and backend components.
+Full-Stack Real-World Chat Application: A complete application from scratch, incorporating both frontend and backend components.
 
 Complex MongoDB Queries and Schemas:Complex queries and create efficient schemas to store messages and chat data.
 
