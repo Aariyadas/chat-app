@@ -86,6 +86,25 @@ const ChatScreen = ({ socket }) => {
     }
   };
 
+  const getDateInRegularFormat = (date) => {
+    let result = "";
+    //if date is today return today
+
+    if (moment(date).isSame(moment(), "day")) {
+      result = moment(date).format("hh:mm");
+    }
+    //if date is yesterday return yesterday and time
+    else if (moment(date).isSame(moment().subtract(1, "day"), "day")) {
+      result = `Yesterday ${moment(date).format("hh:mm")}`;
+    }
+    //  If date is this year return date in MM DD format
+    else if (moment(date).isSame(moment(), "year")) {
+      result = moment(date).format("MM/DD hh:mm");
+    } 
+    
+    return result;
+  };
+
   useEffect(() => {
     getMessages();
     if (selectedChat?.lastMessage?.sender !== user._id) {
@@ -138,8 +157,8 @@ const ChatScreen = ({ socket }) => {
         setIsReceipentTyping(true);
       }
       setTimeout(() => {
-        setIsReceipentTyping(false)
-      },1500)
+        setIsReceipentTyping(false);
+      }, 1500);
     });
   }, [selectedChat]);
 
@@ -147,7 +166,7 @@ const ChatScreen = ({ socket }) => {
     // always scroll to bottom For messages
     const messagesContainer = document.getElementById("messages");
     messagesContainer.scrollTop = messagesContainer.scrollHeight;
-  }, [messages,isReceipentTyping]);
+  }, [messages, isReceipentTyping]);
 
   return (
     <div className="bg-white h-[82vh] border rounded-2xl w-full flex flex-col justify-between p-5">
@@ -176,43 +195,48 @@ const ChatScreen = ({ socket }) => {
       {/* 2nd part chat message */}
       <div className="h-[55vh] overflow-y-scroll p-5" id="messages">
         <div className="flex flex-col gap-2">
-          {messages.map((message) => {
+          {messages.map((message, index) => {
             const isCurrentUserIsSender = message.sender === user._id;
 
             return (
-              <div className={`flex ${isCurrentUserIsSender && "justify-end"}`}>
-                <div className="flex flex-col gap-1">
-                  <h1
-                    className={`${
-                      isCurrentUserIsSender
-                        ? "bg-primary text-white rounded-bl-none"
-                        : "bg-gray-300 text-primary rounded-tr-none"
-                    }
+            
+               
+                <div
+                  className={`flex ${isCurrentUserIsSender && "justify-end"}`}
+                >
+                  <div className="flex flex-col gap-1">
+                    <h1
+                      className={`${
+                        isCurrentUserIsSender
+                          ? "bg-primary text-white rounded-bl-none"
+                          : "bg-gray-300 text-primary rounded-tr-none"
+                      }
                    p-2 rounded-xl `}
-                  >
-                    {message.text}
-                  </h1>
-                  <h1 className="text-gray-500 text-sm">
-                    {moment(message.createdAt).format("hh:mm A")}
-                  </h1>
-                </div>
-                <div>
-                  {isCurrentUserIsSender && (
-                    <i
-                      className={`ri-check-double-line text-lg p-1
+                    >
+                      {message.text}
+                    </h1>
+                    <h1 className="text-gray-500 text-sm">
+                      {getDateInRegularFormat(message.createdAt)}
+                    </h1>
+                  </div>
+                  <div>
+                    {isCurrentUserIsSender && (
+                      <i
+                        className={`ri-check-double-line text-lg p-1
                     ${message.read ? "text-green-400" : "text-gray-400"}
                  `}
-                    ></i>
-                  )}
+                      ></i>
+                    )}
+                  </div>
                 </div>
-              </div>
+             
             );
           })}
           {isReceipentTyping && (
             <div className="pb-10">
-            <h1 className="bg-blue-100 text-primary  p-2 rounded-x w-max">
-              typing...
-            </h1>
+              <h1 className="bg-blue-100 text-primary  p-2 rounded-x w-max">
+                typing...
+              </h1>
             </div>
           )}
         </div>
@@ -228,12 +252,11 @@ const ChatScreen = ({ socket }) => {
             setNewMessages(e.target.value);
             const messagesContainer = document.getElementById("messages");
             messagesContainer.scrollTop = messagesContainer.scrollHeight;
-              socket.emit("typing", {
-                chat: selectedChat._id,
-                members: selectedChat.members.map((mem) => mem._id),
-                sender: user._id,
-              });
-            
+            socket.emit("typing", {
+              chat: selectedChat._id,
+              members: selectedChat.members.map((mem) => mem._id),
+              sender: user._id,
+            });
           }}
         />
         <button

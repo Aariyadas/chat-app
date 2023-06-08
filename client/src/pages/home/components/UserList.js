@@ -76,6 +76,25 @@ const UserList = ({ searchKey ,socket,onlineUsers}) => {
     }
   };
 
+  const getDateInRegularFormat = (date) => {
+    let result = "";
+    //if date is today return today
+
+    if (moment(date).isSame(moment(), "day")) {
+      result = moment(date).format("hh:mm");
+    }
+    //if date is yesterday return yesterday and time
+    else if (moment(date).isSame(moment().subtract(1, "day"), "day")) {
+      result = `Yesterday ${moment(date).format("hh:mm")}`;
+    }
+    //  If date is this year return date in MM DD format
+    else if (moment(date).isSame(moment(), "year")) {
+      result = moment(date).format("MM/DD hh:mm");
+    } 
+    
+    return result;
+  };
+
   const getLastMsg = (userObj) => {
     const chat = allChats.find((chat) =>
       chat.members.map((mem) => mem._id).includes(userObj._id)
@@ -90,13 +109,15 @@ const UserList = ({ searchKey ,socket,onlineUsers}) => {
           <h1 className="text-gray-700 text-s">
             {lastMessagePerson} {chat?.lastMessage?.text}
           </h1>
-          <h1 className="text-gray-500 text-sm justify-right">
-            {moment(chat?.lastMessage?.createdAt).format("hh:mm:A")}
+          <h1 className="text-gray-500 text-sm ">
+            {getDateInRegularFormat(chat?.lastMessage?.createdAt)}
           </h1>
         </div>
       );
     }
   };
+
+
 
  useEffect(()=>{
   socket.on("receive-message",(message)=>{
@@ -132,7 +153,7 @@ const UserList = ({ searchKey ,socket,onlineUsers}) => {
 
 
   return (
-    <div className="flex flex-col gap-3 mt-5 lg:w-96 xl md:w-60 sm:w-60  ">
+    <div className="flex flex-col gap-3 mt-5 lg:w-96 xl:w-96 md:w-60 sm:w-60  ">
       {getData().map((chatObjOrUserObj) => {
         let userObj = chatObjOrUserObj;
         if (chatObjOrUserObj.members) {
