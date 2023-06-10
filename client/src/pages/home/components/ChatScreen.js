@@ -4,12 +4,16 @@ import { RiSendPlaneLine } from "react-icons/ri";
 import { GetMessages, SendMessage } from "../../../apiCalls/messageapi";
 import { HideLoader, ShowLoader } from "../../../redux/loaderSlice";
 import { toast } from "react-hot-toast";
+import { BsEmojiLaughing } from "react-icons/bs";
+
 import moment from "moment";
 import store from "../../../redux/store";
 import { ClearChatMessage } from "../../../apiCalls/chatapi";
 import { SetAllChats } from "../../../redux/userSlice";
+import EmojiPicker from "emoji-picker-react";
 
 const ChatScreen = ({ socket }) => {
+  const [showEmojiPicker, setShowEmojiPicker] = React.useState(false);
   const [isReceipentTyping, setIsReceipentTyping] = React.useState(false);
   const dispatch = useDispatch();
   const [newMessage, setNewMessages] = React.useState("");
@@ -100,8 +104,8 @@ const ChatScreen = ({ socket }) => {
     //  If date is this year return date in MM DD format
     else if (moment(date).isSame(moment(), "year")) {
       result = moment(date).format("MM/DD hh:mm");
-    } 
-    
+    }
+
     return result;
   };
 
@@ -199,37 +203,32 @@ const ChatScreen = ({ socket }) => {
             const isCurrentUserIsSender = message.sender === user._id;
 
             return (
-            
-               
-                <div
-                  className={`flex ${isCurrentUserIsSender && "justify-end"}`}
-                >
-                  <div className="flex flex-col gap-1">
-                    <h1
-                      className={`${
-                        isCurrentUserIsSender
-                          ? "bg-primary text-white rounded-bl-none"
-                          : "bg-gray-300 text-primary rounded-tr-none"
-                      }
+              <div className={`flex ${isCurrentUserIsSender && "justify-end"}`}>
+                <div className="flex flex-col gap-1">
+                  <h1
+                    className={`${
+                      isCurrentUserIsSender
+                        ? "bg-primary text-white rounded-bl-none"
+                        : "bg-gray-300 text-primary rounded-tr-none"
+                    }
                    p-2 rounded-xl `}
-                    >
-                      {message.text}
-                    </h1>
-                    <h1 className="text-gray-500 text-sm">
-                      {getDateInRegularFormat(message.createdAt)}
-                    </h1>
-                  </div>
-                  <div>
-                    {isCurrentUserIsSender && (
-                      <i
-                        className={`ri-check-double-line text-lg p-1
+                  >
+                    {message.text}
+                  </h1>
+                  <h1 className="text-gray-500 text-sm">
+                    {getDateInRegularFormat(message.createdAt)}
+                  </h1>
+                </div>
+                <div>
+                  {isCurrentUserIsSender && (
+                    <i
+                      className={`ri-check-double-line text-lg p-1
                     ${message.read ? "text-green-400" : "text-gray-400"}
                  `}
-                      ></i>
-                    )}
-                  </div>
+                    ></i>
+                  )}
                 </div>
-             
+              </div>
             );
           })}
           {isReceipentTyping && (
@@ -242,7 +241,25 @@ const ChatScreen = ({ socket }) => {
         </div>
       </div>
       {/* 3rd part chat input */}
-      <div className="h-18 rounded-xl border-gray-300 shadow border flex flex-col sm:flex-row justify-between p-2 items-center">
+      <div className="h-18 rounded-xl border-gray-300 shadow border flex flex-col sm:flex-row justify-between p-2 items-center relative">
+        {showEmojiPicker && (
+          <div className="absolute -top-96 left-0">
+            <EmojiPicker
+              height={350}
+              onEmojiClick={(e) => {
+                setNewMessages(newMessage + e.emoji);
+                setShowEmojiPicker(false)
+              }}
+            />
+          </div>
+        )}
+
+        <BsEmojiLaughing
+          className="cursor-pointer"
+          on
+          onClick={() => setShowEmojiPicker(!showEmojiPicker)}
+        />
+
         <input
           type="text"
           placeholder="Type a message"
