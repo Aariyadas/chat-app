@@ -6,6 +6,10 @@ import { useDispatch, useSelector } from "react-redux";
 import { HideLoader, ShowLoader } from "../redux/loaderSlice";
 import { SetUser ,SetAllUsers, SetAllChats} from "../redux/userSlice";
 import { GetAllChats } from "../apiCalls/chatapi";
+import { CiUser} from 'react-icons/ci';
+import { LuLogOut} from 'react-icons/lu';
+import {TbMessageDots } from 'react-icons/tb';
+
 
 const ProtectedRoute = ({ children }) => {
   const { user } = useSelector((state) => state.userReducer);
@@ -44,24 +48,31 @@ const ProtectedRoute = ({ children }) => {
 
   return (
     <div className="min-h-screen min-w-screen bg-gray-100 p-2">
-      {/* Header */}
-      <div className="flex justify-between p-5 ">
-        <div className="flex items-center gap-1">
-          <i className="ri-message-3-line text-2xl"></i>
-          <h1 className="text-primary text-2xl uppercase font-bold">Let's Chat</h1>
-        </div>
-        <div className="flex gap-1 text-md items-center">
-          <i className="ri-shield-user-line gap-1"></i>
-          <h1 className="underline text-sm md:text-base ">{user?.name}</h1>
-          <i className="ri-logout-circle-line ml-5 text-xl cursor-pointer"
-           onClick={()=>{
-            localStorage.removeItem("token");
-            navigate("/login")
-        }}></i>
-        </div>
-      </div>
-      <div className="py-5">{children}</div>
+  {/* Header */}
+  <div className="flex justify-between p-5 ">
+    <div className="flex items-center gap-1">
+      <TbMessageDots className="text-2xl" />
+      <h1 className="text-primary text-2xl uppercase font-bold">Let's Chat</h1>
     </div>
+    <div className="flex gap-1 text-md items-center">
+      <CiUser className="gap-1" />
+      <h1 className="underline text-sm md:text-base  cursor-pointer"
+      onClick={()=>{
+        navigate("/profile")
+      }}
+      >{user?.name}</h1>
+      <LuLogOut
+        className="ml-5 text-xl cursor-pointer"
+        onClick={() => {
+          localStorage.removeItem("token");
+          navigate("/login");
+        }}
+      />
+    </div>
+  </div>
+  <div className="py-5">{children}</div>
+</div>
+
   );
 };
 

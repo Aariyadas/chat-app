@@ -134,5 +134,8 @@ input:focus{
   .user-name {
     font-size: 1rem;
   }
+  .file-input {
+    border:none !important
+  }
 }
 
