@@ -4,6 +4,8 @@ const router = require("express").Router();
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const authmiddlewares = require("../middlewares/authmiddlewares");
+const cloudinary =require("../cloudinary")
+
 
 router.post("/register", async (req, res) => {
   try {
@@ -109,5 +111,38 @@ router.get("/get-all-users", authmiddlewares, async (req, res) => {
     });
   }
 });
+
+
+// update user profile picture
+router.post("/update-profile-picture",authmiddlewares,async(req,res)=>{
+  try{
+    const image =req.body.image;
+    // upoad to cloudinary and to get the url 
+    const uploadedImage =await cloudinary.uploader.upload(image,{
+      folder :"chat-app",
+    })
+    // update user profile picture
+    const user =await User.findOneAndUpdate(
+      {_id:req.body.userId},
+      {profilePic:uploadedImage.secure_url},
+      {new:true}
+
+    )
+    res.send({
+      success:true,
+      message:"Profile Picture Updated Sucessfully",
+      data:user,
+    })
+
+  }catch(error){
+    res.send({
+      message:error.message,
+      success:false
+    })
+  }
+})
+
+
+
 
 module.exports = router;
