@@ -29,7 +29,7 @@ const ChatScreen = ({ socket }) => {
   );
 
 
-  const sendNewMessage = async (image="") => {
+  const sendNewMessage = async (image) => {
     try {
       const message = {
         chat: selectedChat._id,
@@ -113,16 +113,7 @@ const ChatScreen = ({ socket }) => {
 
     return result;
   };
-  const onUploadImageClick = (e) => {
-    const file = e.target.files[0];
-    console.log(file);
-    const reader = new FileReader(file);
-    reader.readAsDataURL(file);
-    reader.onload = async () => {
-      SendMessage(reader.result);
-    };
-  };
-
+ 
   useEffect(() => {
     getMessages();
     if (selectedChat?.lastMessage?.sender !== user._id) {
@@ -186,6 +177,14 @@ const ChatScreen = ({ socket }) => {
     messagesContainer.scrollTop = messagesContainer.scrollHeight;
   }, [messages, isReceipentTyping]);
 
+  const onUploadImageClick = (e) => {
+    const file = e.target.files[0];
+    const reader = new FileReader(file);
+    reader.readAsDataURL(file);
+    reader.onloadend = async () => {
+      sendNewMessage(reader.result);
+    };
+  };
   return (
     <div className="bg-white h-[82vh] border rounded-2xl w-full flex flex-col justify-between p-5">
       {/* 1st part recipient user */}
@@ -233,10 +232,10 @@ const ChatScreen = ({ socket }) => {
                   {message.image && (
                     <img
                       src={message.image}
-                      alt="message img"
+                      alt="message"
                       className="w-24 h-24 rounded-xl"
                     />
-                  )}
+          )}
 
                   <h1 className="text-gray-500 text-sm">
                     {getDateInRegularFormat(message.createdAt)}
@@ -282,7 +281,9 @@ const ChatScreen = ({ socket }) => {
             <input
               type="file"
               id="file"
-              style={{ display: "none" }}
+              style={{
+                display: "none",
+              }}
               accept="image/gif,image/jpeg,image/jpg,image/png"
               onChange={onUploadImageClick}
             />
@@ -312,7 +313,7 @@ const ChatScreen = ({ socket }) => {
         />
         <button
           className="bg-black text-white py-1 px-5 rounded h-max mt-2 sm:mt-0 sm:w-auto"
-          onClick={sendNewMessage}
+          onClick={()=>sendNewMessage('')}
         >
           <RiSendPlaneLine className="text-white" />
         </button>
