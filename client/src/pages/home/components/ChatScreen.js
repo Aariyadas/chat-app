@@ -18,7 +18,7 @@ const ChatScreen = ({ socket }) => {
   const [isReceipentTyping, setIsReceipentTyping] = React.useState(false);
   const dispatch = useDispatch();
   const [newMessage, setNewMessages] = React.useState("");
-  // const [image, setImage] = React.useState("");
+
   const { selectedChat, user, allChats } = useSelector(
     (state) => state.userReducer
   );
@@ -27,7 +27,9 @@ const ChatScreen = ({ socket }) => {
   const receipentUser = selectedChat.members.find(
     (mem) => mem._id !== user._id
   );
-  const sendNewMessage = async (image = "") => {
+
+
+  const sendNewMessage = async (image="") => {
     try {
       const message = {
         chat: selectedChat._id,
@@ -231,7 +233,7 @@ const ChatScreen = ({ socket }) => {
                   {message.image && (
                     <img
                       src={message.image}
-                      alt="message"
+                      alt="message img"
                       className="w-24 h-24 rounded-xl"
                     />
                   )}
