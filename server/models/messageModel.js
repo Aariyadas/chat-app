@@ -13,14 +13,15 @@ const messageSchema =new mongoose.Schema({
         type:String,
         
     },
+    image:{
+        type:String,
+        required:false,
+    },
     read:{
       type:Boolean,
       default:false,  
     },
-    image:{
-        type:String,
-        required:false,
-    }
+   
 },{
     timestamps:true,
 })
