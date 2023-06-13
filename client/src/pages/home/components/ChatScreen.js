@@ -5,6 +5,7 @@ import { GetMessages, SendMessage } from "../../../apiCalls/messageapi";
 import { HideLoader, ShowLoader } from "../../../redux/loaderSlice";
 import { toast } from "react-hot-toast";
 import { BsEmojiLaughing } from "react-icons/bs";
+import { BsImages } from "react-icons/bs";
 
 import moment from "moment";
 import store from "../../../redux/store";
@@ -17,6 +18,7 @@ const ChatScreen = ({ socket }) => {
   const [isReceipentTyping, setIsReceipentTyping] = React.useState(false);
   const dispatch = useDispatch();
   const [newMessage, setNewMessages] = React.useState("");
+  // const [image, setImage] = React.useState("");
   const { selectedChat, user, allChats } = useSelector(
     (state) => state.userReducer
   );
@@ -25,13 +27,14 @@ const ChatScreen = ({ socket }) => {
   const receipentUser = selectedChat.members.find(
     (mem) => mem._id !== user._id
   );
-  const sendNewMessage = async () => {
+  const sendNewMessage = async (image = "") => {
     try {
       const message = {
         chat: selectedChat._id,
 
         sender: user._id,
         text: newMessage,
+        image,
       };
       // Sending message to server using socket
       socket.emit("send-message", {
@@ -107,6 +110,15 @@ const ChatScreen = ({ socket }) => {
     }
 
     return result;
+  };
+  const onUploadImageClick = (e) => {
+    const file = e.target.files[0];
+    console.log(file);
+    const reader = new FileReader(file);
+    reader.readAsDataURL(file);
+    reader.onload = async () => {
+      SendMessage(reader.result);
+    };
   };
 
   useEffect(() => {
@@ -215,6 +227,15 @@ const ChatScreen = ({ socket }) => {
                   >
                     {message.text}
                   </h1>
+
+                  {message.image && (
+                    <img
+                      src={message.image}
+                      alt="message"
+                      className="w-24 h-24 rounded-xl"
+                    />
+                  )}
+
                   <h1 className="text-gray-500 text-sm">
                     {getDateInRegularFormat(message.createdAt)}
                   </h1>
@@ -248,17 +269,28 @@ const ChatScreen = ({ socket }) => {
               height={350}
               onEmojiClick={(e) => {
                 setNewMessages(newMessage + e.emoji);
-                setShowEmojiPicker(false)
+                setShowEmojiPicker(false);
               }}
             />
           </div>
         )}
-
-        <BsEmojiLaughing
-          className="cursor-pointer"
-          on
-          onClick={() => setShowEmojiPicker(!showEmojiPicker)}
-        />
+        <div className="flex gap-2 text-xl">
+          <label for="file">
+            <BsImages className="cursor-pointer text-xl" typeof="file" />
+            <input
+              type="file"
+              id="file"
+              style={{ display: "none" }}
+              accept="image/gif,image/jpeg,image/jpg,image/png"
+              onChange={onUploadImageClick}
+            />
+          </label>
+          <BsEmojiLaughing
+            className="cursor-pointer text-xl"
+            on
+            onClick={() => setShowEmojiPicker(!showEmojiPicker)}
+          />
+        </div>
 
         <input
           type="text"
