@@ -7,7 +7,7 @@ import { SetAllChats, SetSelectedChat } from "../../../redux/userSlice";
 import moment from "moment";
 import store from "../../../redux/store";
 
-const UserList = ({ searchKey ,socket,onlineUsers}) => {
+const UserList = ({ searchKey, socket, onlineUsers }) => {
   const { allUsers, allChats, user, selectedChat } = useSelector(
     (state) => state.userReducer
   );
@@ -24,7 +24,6 @@ const UserList = ({ searchKey ,socket,onlineUsers}) => {
         const updatedChats = [...allChats, newChat];
         dispatch(SetAllChats(updatedChats));
         dispatch(SetSelectedChat(newChat));
-        
       } else {
         toast.error(response.message);
       }
@@ -45,13 +44,15 @@ const UserList = ({ searchKey ,socket,onlineUsers}) => {
   };
 
   const getData = () => {
-    if (searchKey === " ") {
-      return allChats;
-    }
-    return allUsers.filter((user) =>
-      user.name.toLowerCase().includes(searchKey.toLowerCase())
-    );
-  };
+    // if search key is empty then return all chats else return filtered chats and users
+    
+      if (searchKey === " ") {
+        return allChats ;
+      }
+      return allUsers.filter((user) =>
+        user.name.toLowerCase().includes(searchKey.toLowerCase())
+      );
+    } 
 
   const getIsSelectedChatOrNot = (userObj) => {
     if (selectedChat) {
@@ -60,22 +61,6 @@ const UserList = ({ searchKey ,socket,onlineUsers}) => {
     return false;
   };
 
-  const getUnreadMessages = (userObj) => {
-    const chat = allChats.find((chat) =>
-      chat.members.map((mem) => mem._id).includes(userObj._id)
-    );
-    if (
-      chat &&
-      chat?.unreadMessages &&
-      chat?.lastMessage?.sender !== user._id
-    ) {
-      return (
-        <div className="bg-primary text-white text-xs rounded-full h-5 w-5 flex items-center justify-center ">
-          {chat?.unreadMessages}
-        </div>
-      );
-    }
-  };
 
   const getDateInRegularFormat = (date) => {
     let result = "";
@@ -91,8 +76,8 @@ const UserList = ({ searchKey ,socket,onlineUsers}) => {
     //  If date is this year return date in MM DD format
     else if (moment(date).isSame(moment(), "year")) {
       result = moment(date).format("MM/DD hh:mm");
-    } 
-    
+    }
+
     return result;
   };
 
@@ -117,41 +102,52 @@ const UserList = ({ searchKey ,socket,onlineUsers}) => {
       );
     }
   };
-
-
-
- useEffect(()=>{
-  socket.on("receive-message",(message)=>{
-    const tempSelectedChat =store.getState().userReducer.selectedChat;
-    let tempAllChats=store.getState().userReducer.allChats;
-    if(tempSelectedChat?._id !== message.chat){
-     const updatedAllChats =tempAllChats.map((chat)=>{
-      if(chat._id === message.chat){
-        return {
-          ...chat,
-          unreadMessages:(chat?.unreadMessages ||0) +1,
-          lastMessage:message,
-          updatedAt:message.createdAt
-        }
-      }
-      return chat;
-     });
-     tempAllChats=updatedAllChats;
+  
+  const getUnreadMessages = (userObj) => {
+    const chat = allChats.find((chat) =>
+      chat.members.map((mem) => mem._id).includes(userObj._id)
+    );
+    if (
+      chat &&
+      chat?.unreadMessages &&
+      chat?.lastMessage?.sender !== user._id
+    ) {
+      return (
+        <div className="bg-blue-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
+          {chat?.unreadMessages}
+        </div>
+      );
     }
-    // Sort latest message on top
-    const latestChat = tempAllChats.find(
-    (chat)=> chat._id ===message.chat
+  };
 
-    );
-    const otherChats =tempAllChats.filter(
-      (chat)=> chat._id !== message.chat
-    );
+  useEffect(() => {
+    socket.on("receive-message", (message) => {
+      const tempSelectedChat = store.getState().userReducer.selectedChat;
+      let tempAllChats = store.getState().userReducer.allChats;
+      if (tempSelectedChat?._id !== message.chat) {
+        const updatedAllChats = tempAllChats.map((chat) => {
+          if (chat._id === message.chat) {
+            return {
+              ...chat,
+              unreadMessages: (chat?.unreadMessages || 0) + 1,
+              lastMessage: message,
+              updatedAt: message.createdAt,
+            };
+          }
+          return chat;
+        });
+        tempAllChats = updatedAllChats;
+      }
+      // Sort latest message on top
+      const latestChat = tempAllChats.find((chat) => chat._id === message.chat);
+      const otherChats = tempAllChats.filter(
+        (chat) => chat._id !== message.chat
+      );
 
-    tempAllChats=[latestChat,...otherChats];
-    dispatch(SetAllChats(tempAllChats))
-  })
- },[])
-
+      tempAllChats = [latestChat, ...otherChats];
+      dispatch(SetAllChats(tempAllChats));
+    });
+  }, []);
 
   return (
     <div className="flex flex-col gap-3 mt-5 lg:w-96 xl:w-96 md:w-60 sm:w-60  ">
@@ -183,20 +179,26 @@ const UserList = ({ searchKey ,socket,onlineUsers}) => {
                   <h1 className="uppercase text-white text-xl font-semibold">
                     {userObj.name[0]}
                   </h1>
-                  {onlineUsers.includes(userObj._id)&& <div>
-                    <div className="bg-green-600 h-3 w-3 rounded-full absolute bottom-[2px] right-1"></div>
-                    </div>}
+                  {onlineUsers.includes(userObj._id) && (
+                    <div>
+                      <div className="bg-green-600 h-3 w-3 rounded-full absolute bottom-[2px] right-1"></div>
+                    </div>
+                  )}
                 </div>
               )}
-              <div className="flex flex-col gap-1 ">
-                <div className="flex gap-1 ">
-                  <h1>{userObj.name}</h1>
-
+              <div className="flex flex-col gap-1">
+                <div className="flex gap-1">
+                  <div className="flex gap-1 items-center">
+                    <h1>{userObj.name}</h1>
+                    {onlineUsers.includes(userObj._id) && (
+                      <div>
+                        <div className="bg-green-700 h-3 w-3 rounded-full"></div>
+                      </div>
+                    )}
+                  </div>
                   {getUnreadMessages(userObj)}
                 </div>
-                <h1 className="text-gray-500 text-sm">
-                  {getLastMsg(userObj)}
-                  </h1>
+                {getLastMsg(userObj)}
               </div>
             </div>
             <div onClick={() => createNewChat(userObj._id)}>

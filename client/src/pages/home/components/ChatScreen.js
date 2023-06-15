@@ -86,7 +86,7 @@ const ChatScreen = ({ socket }) => {
           }
           return chat;
         });
-        console.log(updatedChats);
+        
         dispatch(SetAllChats(updatedChats));
       }
     } catch (error) {

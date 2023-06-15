@@ -55,30 +55,27 @@ router.get("/get-all-chats", authMiddleware, async (req, res) => {
   }
 });
 
-router.post("/clear-unread-message", authMiddleware, async (req, res) => {
-  
+router.post("/clear-unread-messages", authMiddleware, async (req, res) => {
   try {
-    // Find chat and update unread message count to 0
+    // find chat and update unread messages count to 0
     const chat = await Chat.findById(req.body.chat);
     if (!chat) {
       return res.send({
         success: false,
-        message: "Chat not Found",
+        message: "Chat not found",
       });
     }
-  
     const updatedChat = await Chat.findByIdAndUpdate(
       req.body.chat,
       {
-        unreadMessage: 0,
+        unreadMessages: 0,
       },
       { new: true }
     )
       .populate("members")
       .populate("lastMessage");
-   
-    // Find all unread message of chat and update them as read
 
+    // find all unread messages of this chat and update them to read
     await Message.updateMany(
       {
         chat: req.body.chat,
@@ -90,17 +87,15 @@ router.post("/clear-unread-message", authMiddleware, async (req, res) => {
     );
     res.send({
       success: true,
-      message: "Unread message cleared successfully",
+      message: "Unread messages cleared successfully",
       data: updatedChat,
     });
   } catch (error) {
     res.send({
       success: false,
-      message: "Error clearing unread message",
+      message: "Error clearing unread messages",
       error: error.message,
     });
-  
   }
 });
-
 module.exports = router;
