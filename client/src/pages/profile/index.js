@@ -74,7 +74,7 @@ const dispatch =useDispatch();
               className="file-input border-0"
             />
 
-            <button className="contained-btn "
+            <button className="contained-btn flex justify-center p-6 "
             onClick={updateProfilePic}
             >Update</button>
           

@@ -28,7 +28,6 @@ const ChatScreen = ({ socket }) => {
     (mem) => mem._id !== user._id
   );
 
-
   const sendNewMessage = async (image) => {
     try {
       const message = {
@@ -113,7 +112,7 @@ const ChatScreen = ({ socket }) => {
 
     return result;
   };
- 
+
   useEffect(() => {
     getMessages();
     if (selectedChat?.lastMessage?.sender !== user._id) {
@@ -235,21 +234,31 @@ const ChatScreen = ({ socket }) => {
                       alt="message"
                       className="w-24 h-24 rounded-xl"
                     />
-          )}
+                  )}
 
                   <h1 className="text-gray-500 text-sm">
                     {getDateInRegularFormat(message.createdAt)}
                   </h1>
                 </div>
-                <div>
-                  {isCurrentUserIsSender && (
-                    <i
-                      className={`ri-check-double-line text-lg p-1
-                    ${message.read ? "text-green-400" : "text-gray-400"}
-                 `}
-                    ></i>
+                {isCurrentUserIsSender &&
+                  message.read && (
+                    <div className="p-2">
+                      {receipentUser.profilePic && (
+                        <img
+                          src={receipentUser.profilePic}
+                          alt="profile pic"
+                          className="w-4 h-4 rounded-full"
+                        />
+                      )}
+                      {!receipentUser.profilePic && (
+                        <div className="bg-gray-400 rounded-full h-4 w-4  flex items-center justify-center relative">
+                          <h1 className="uppercase text-white text-xs font-semibold">
+                            {receipentUser.name[0]}
+                          </h1>
+                        </div>
+                      )}
+                    </div>
                   )}
-                </div>
               </div>
             );
           })}
@@ -313,7 +322,7 @@ const ChatScreen = ({ socket }) => {
         />
         <button
           className="bg-black text-white py-1 px-5 rounded h-max mt-2 sm:mt-0 sm:w-auto"
-          onClick={()=>sendNewMessage('')}
+          onClick={() => sendNewMessage("")}
         >
           <RiSendPlaneLine className="text-white" />
         </button>

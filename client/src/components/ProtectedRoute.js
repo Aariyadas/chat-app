@@ -60,15 +60,15 @@ const ProtectedRoute = ({ children }) => {
             Let's Chat
           </h1>
         </div>
-        <div className="flex gap-1 text-md items-center">{
+        <div className="flex gap-2 text-md items-center bg-white p-2 rounded">{
           user?.profilePic && 
           <img
           src ={user?.profilePic}
           alt="profile" className="h-8 w-8 rounded-full object-cover"/>
         }
-         {!user?.profilePic && <CiUser className="gap-1" />}
+         {!user?.profilePic && <CiUser className="gap-1 text-primary" />}
           <h1
-            className="underline text-sm md:text-base  cursor-pointer"
+            className="underline text-sm md:text-base  cursor-pointer text-primary"
             onClick={() => {
               navigate("/profile");
             }}
@@ -76,7 +76,7 @@ const ProtectedRoute = ({ children }) => {
             {user?.name}
           </h1>
           <LuLogOut
-            className="ml-5 text-xl cursor-pointer"
+            className="ml-5 text-xl cursor-pointer text-primary"
             onClick={() => {
               localStorage.removeItem("token");
               navigate("/login");

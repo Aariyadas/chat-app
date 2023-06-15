@@ -40,6 +40,17 @@ const Home = () => {
           <ChatScreen socket={socket} />
         </div>
       )}
+      {!selectedChat && (
+        <div className="w-full h-[75vh] items-center justify-center flex bg-white  flex-col">
+          <img
+          src="https://www.pngmart.com/files/16/Speech-Chat-Icon-Transparent-PNG.png"
+          alt=""
+          className="w-96 h-96"/>
+          <h1 className="text-2xl font-semibold text-gray-500">Select a user to chat !!! </h1>
+
+
+        </div>
+      )}
     </div>
   );
 };

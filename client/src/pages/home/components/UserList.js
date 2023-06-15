@@ -163,7 +163,7 @@ const UserList = ({ searchKey ,socket,onlineUsers}) => {
         }
         return (
           <div
-            className={`"shadow-sm border p-3 rounded-2xl bg-white flex justify-between items-center cursor-pointer w-full "
+            className={`"shadow-sm border p-2 rounded-2xl bg-white flex justify-between items-center cursor-pointer w-full "
             ${getIsSelectedChatOrNot(userObj) && "border-primary border-2"}
             `}
             key={userObj._id}

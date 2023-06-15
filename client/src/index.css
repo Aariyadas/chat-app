@@ -36,7 +36,14 @@ input:focus{
   text-transform: uppercase;
 }
 
-
+.disabled-btn {
+  background-color: #e2dee5;
+  color:rgb(92, 91, 91);
+  padding: 5px 20px;
+  height:40px;
+  text-transform:uppercase;
+  opacity:0.5;
+}
 
 @media (max-width: 640px) {
   .header {
