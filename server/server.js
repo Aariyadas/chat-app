@@ -28,7 +28,7 @@ io.on("connection", (socket) => {
     socket.join(userId);
   });
   // Send message to clients (who are present in members array)
-  socket.on("send-message", (message) => {
+  socket.once("send-message", (message) => {
  
     io.to(message.members[0])
       .to(message.members[1])
@@ -54,11 +54,17 @@ io.on("connection", (socket) => {
     if(!onlineUsers.includes(userId)){
       onlineUsers.push(userId)
     }
-    console.log(onlineUsers)
+    
     io.emit("online-users",onlineUsers)
+  })
+  socket.on("went-offline",(userId)=>{
+    onlineUsers=onlineUsers.filter((user)=> user!==userId)
+    console.log(onlineUsers)
+    io.emit("online-users-updated",onlineUsers)
   })
 
 });
+
 
 app.use("/api/users", userRoute);
 app.use("/api/chats", chatRoutes);

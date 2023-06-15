@@ -24,6 +24,7 @@ const UserList = ({ searchKey ,socket,onlineUsers}) => {
         const updatedChats = [...allChats, newChat];
         dispatch(SetAllChats(updatedChats));
         dispatch(SetSelectedChat(newChat));
+        
       } else {
         toast.error(response.message);
       }

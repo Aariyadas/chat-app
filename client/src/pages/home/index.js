@@ -7,6 +7,7 @@ import ChatScreen from "./components/ChatScreen";
 import UserSearch from "./components/UserSearch";
 
 const socket = io("http://localhost:5000");
+localStorage.setItem('socket',socket)
 const Home = () => {
 
 
@@ -18,8 +19,8 @@ const Home = () => {
       socket.emit("join-room", user._id);
       socket.emit("came-online",user._id)
       
-      socket.on("online-users",(users)=>{
-        console.log(users)
+      socket.on("online-users-updated",(users)=>{
+      
         setOnlineUsers(users)
       })
 

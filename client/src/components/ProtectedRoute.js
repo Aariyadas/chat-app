@@ -9,7 +9,11 @@ import { GetAllChats } from "../apiCalls/chatapi";
 import { CiUser } from "react-icons/ci";
 import { LuLogOut } from "react-icons/lu";
 import { TbMessageDots } from "react-icons/tb";
+import io from "socket.io-client"
 
+
+
+const socket =io("http://localhost:5000")
 const ProtectedRoute = ({ children }) => {
   const { user } = useSelector((state) => state.userReducer);
   const dispatch = useDispatch();
@@ -78,6 +82,8 @@ const ProtectedRoute = ({ children }) => {
           <LuLogOut
             className="ml-5 text-xl cursor-pointer text-primary"
             onClick={() => {
+
+              socket.emit("went-offline",user._id);
               localStorage.removeItem("token");
               navigate("/login");
             }}
