@@ -150,7 +150,7 @@ const UserList = ({ searchKey, socket, onlineUsers }) => {
   }, []);
 
   return (
-    <div className="flex flex-col gap-3 mt-5 lg:w-96 xl:w-96 md:w-60 sm:w-60  ">
+    <div className="flex flex-col gap-3 mt-5 lg:w-96 xl:w-96 md:w-60 sm:w-60 xs:w-40 ">
       {getData().map((chatObjOrUserObj) => {
         let userObj = chatObjOrUserObj;
         if (chatObjOrUserObj.members) {

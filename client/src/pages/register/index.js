@@ -48,7 +48,7 @@ const Register = () => {
           </h1>
         </div>
         <div className="flex flex-col gap-5">
-          <h1 className="text-1xl uppercase font-bold">Register</h1>
+          
           <input
             type="text"
             value={user.name}

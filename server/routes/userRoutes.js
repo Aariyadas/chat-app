@@ -42,7 +42,7 @@ router.post("/login", async (req, res) => {
     if (!user) {
       return res.send({
         success: false,
-        message: "User does not exist",
+        message: "Invalid Data ",
       });
     }
     // check password correct
