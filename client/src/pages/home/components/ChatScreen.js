@@ -185,7 +185,7 @@ const ChatScreen = ({ socket }) => {
     };
   };
   return (
-    <div className="bg-white h-[82vh] border rounded-2xl w-full flex flex-col justify-between p-5">
+    <div className="bg-white h-[82vh] border rounded-2xl w-full flex flex-col justify-between p-5 ">
       {/* 1st part recipient user */}
       <div>
         <div className="flex gap-5 items-center mb-2">
