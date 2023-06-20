@@ -1,7 +1,7 @@
 import React from 'react'
 
 
-const UserSearch = ({searchKey,setSearchKey}) => {
+const SearchUser = ({searchKey,setSearchKey}) => {
    
 
   return (
@@ -17,4 +17,4 @@ const UserSearch = ({searchKey,setSearchKey}) => {
   )
 }
 
-export default UserSearch
+export default SearchUser
