@@ -32,11 +32,13 @@ const ProtectedRoute = ({ children }) => {
         dispatch(SetAllChats(allChatResponse.data));
       } else {
         toast.error(response.message);
+        localStorage.removeItem("token");
         navigate("/login");
       }
     } catch (error) {
       dispatch(HideLoader());
       toast.error(error.message);
+      localStorage.removeItem("token");
       navigate("/login");
     }
   };

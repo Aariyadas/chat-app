@@ -47,10 +47,10 @@ const UserList = ({ searchKey, socket, onlineUsers }) => {
     // if search key is empty then return all chats else return filtered chats and users
     
       if (searchKey === " ") {
-        return allChats ;
+        return allChats  ;
       }
       return allUsers.filter((user) =>
-        user.name.toLowerCase().includes(searchKey.toLowerCase())
+        user.name.toLowerCase().includes(searchKey.toLowerCase()) 
       );
     } 
 
@@ -139,18 +139,20 @@ const UserList = ({ searchKey, socket, onlineUsers }) => {
         tempAllChats = updatedAllChats;
       }
       // Sort latest message on top
+  
       const latestChat = tempAllChats.find((chat) => chat._id === message.chat);
       const otherChats = tempAllChats.filter(
         (chat) => chat._id !== message.chat
       );
-
       tempAllChats = [latestChat, ...otherChats];
       dispatch(SetAllChats(tempAllChats));
     });
   }, []);
 
+
+
   return (
-    <div className="flex flex-col gap-3 mt-5 lg:w-96 xl:w-96 md:w-60 sm:w-60 xs:w-40 ">
+    <div className="flex flex-col gap-3 mt-5 lg:w-96 xl:w-96 md:w-60 sm:w-60  ">
       {getData().map((chatObjOrUserObj) => {
         let userObj = chatObjOrUserObj;
         if (chatObjOrUserObj.members) {
@@ -179,11 +181,11 @@ const UserList = ({ searchKey, socket, onlineUsers }) => {
                   <h1 className="uppercase text-white text-xl font-semibold">
                     {userObj.name[0]}
                   </h1>
-                  {onlineUsers.includes(userObj._id) && (
+                  {/* {onlineUsers.includes(userObj._id) && (
                     <div>
                       <div className="bg-green-600 h-3 w-3 rounded-full absolute bottom-[2px] right-1"></div>
                     </div>
-                  )}
+                  )} */}
                 </div>
               )}
               <div className="flex flex-col gap-1">
