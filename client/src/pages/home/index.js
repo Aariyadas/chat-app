@@ -6,7 +6,7 @@ import UserList from "./components/UserList";
 import ChatScreen from "./components/ChatScreen";
 import UserSearch from "./components/UserSearch";
 
-const socket = io("http://localhost:5000");
+const socket = io("https://letschat.onrender.com");
 localStorage.setItem('socket',socket)
 const Home = () => {
 
