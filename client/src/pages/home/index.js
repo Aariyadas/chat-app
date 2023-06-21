@@ -8,7 +8,7 @@ import UserList from "./components/UserList";
 import ChatScreen from "./components/ChatScreen";
 import SearchUser from "./components/SearchUser";
 
-const socket = io("https://lets-chat.onrender.com");
+const socket = io("https://lets-chat-58fs.onrender.com");
 localStorage.setItem("socket", socket);
 const Home = () => {
   const [searchKey, setSearchKey] = React.useState("");

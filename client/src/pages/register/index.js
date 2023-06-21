@@ -5,6 +5,7 @@ import { toast } from "react-hot-toast";
 import { useDispatch, useSelector } from "react-redux";
 import { HideLoader, ShowLoader } from "../../redux/loaderSlice";
 import { TbMessageDots } from "react-icons/tb";
+// import { getAntdFormInputRules } from "../../utils/helpers";
 const Register = () => {
   const dispatch = useDispatch();
 

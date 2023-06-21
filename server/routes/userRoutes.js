@@ -10,6 +10,27 @@ const cloudinary =require("../cloudinary")
 router.post("/register", async (req, res) => {
   try {
     // Check if user already exists
+    const { email, password } = req.body;
+    if (!email) {
+      return res.send({
+        success: false,
+        message: "Email is required",
+      });
+    }
+
+    if (!/\S+@\S+\.\S+/.test(email)) {
+      return res.send({
+        success: false,
+        message: "Invalid email format",
+      });
+    }
+
+    if (!password || password.length < 6) {
+      return res.send({
+        success: false,
+        message: "Password needs to have at least 6 characters",
+      });
+    }
     const user = await User.findOne({ email: req.body.email });
     if (user) {
       return res.send({
